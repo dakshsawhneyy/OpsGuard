@@ -12,7 +12,7 @@ while true; do
     if ! systemctl status nginx &> /dev/null; then
         NGINX_STATUS="inactive"
         echo "Nginx is down! Attempting restart..."
-        sudo systemctl restart nginx
+        # systemctl restart nginx
     else
         NGINX_STATUS="active"
     fi
@@ -30,6 +30,22 @@ while true; do
     echo "DISK_USAGE = $DISK_USAGE%"
     echo "NGINX_STATUS = $NGINX_STATUS"
     echo "------------- End of Report --------------"
+
+    payload=$(jq -n \
+        --arg cpu_load "$CPU_LOAD" \
+        --arg ram_usage "$FREE_MEM" \
+        --arg status "$NGINX_STATUS" \
+        '{"cpu": $cpu_load, "ram": $ram_usage, "status": $status}'
+    )
+
+    echo "$payload"
+
+    # Sending data over api
+    curl -s -X POST \
+        -H 'Content-Type: application/json' \
+        -d "$payload" \
+        https://httpbin.org/post &> /dev/null
+    echo "Data sent to https://httpbin.org/post"
 
     sleep 5
 done

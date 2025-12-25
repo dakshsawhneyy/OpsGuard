@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu pipefail
+set -euo pipefail
 
 while true; do
     CPU_LOAD=$(uptime | awk '{print $9}' | cut -d',' -f1)
@@ -44,8 +44,8 @@ while true; do
     curl -s -X POST \
         -H 'Content-Type: application/json' \
         -d "$payload" \
-        https://httpbin.org/post &> /dev/null
-    echo "Data sent to https://httpbin.org/post"
+        http://0.0.0.0:8000/report &> /dev/null
+    echo "Data sent to http://0.0.0.0:8000/report"
 
     sleep 5
 done

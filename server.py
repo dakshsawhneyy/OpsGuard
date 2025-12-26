@@ -5,7 +5,7 @@ from pydantic import BaseModel
 import requests
 from dotenv import load_dotenv
 import os
-import time
+import datetime
 
 load_dotenv()
 
@@ -33,7 +33,7 @@ async def recieve_report(data: Report):
     if data.status.lower() == "inactive":
         print("ALERT: Nginx is DOWN on the server!")
         # Send alert to slack
-        msg = f"{time.time()} -- ALERT: Nginx is DOWN on the server!"
+        msg = f"{datetime.now()} -- ALERT: Nginx is DOWN on the server!"
         sendToSlack(msg) 
               
     if data.cpu >= 2.0:
@@ -45,5 +45,5 @@ async def recieve_report(data: Report):
     return {"message": "Report Processed", "status": "Success"}
     
 # Run as a server
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# if __name__ == "__main__":
+#     uvicorn.run(app, host="0.0.0.0", port=8000)

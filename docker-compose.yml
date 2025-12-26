@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+    container_name: agent
+    environment:
+      - SERVER_URL="http://server:8000/report"
+    depends_on:
+      - server
+    networks:
+      - ops-guard
+    volumes:
+      # Bind /proc of host with the container [/host/proc because data doesn't gets overwritten with container data]
+      - /proc:/host/proc:ro
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: server
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    networks:
+      - ops-guard
+
+networks:
+  ops-guard:

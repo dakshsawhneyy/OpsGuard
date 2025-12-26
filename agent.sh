@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+TARGET_URL="${SERVER_URL:-"http://localhost:8000/report"}"
 while true; do
     CPU_LOAD=$(uptime | awk '{print $9}' | cut -d',' -f1)
     FREE_MEM=$(free -m | awk 'NR==2{print $4}')
@@ -44,8 +45,8 @@ while true; do
     curl -s -X POST \
         -H 'Content-Type: application/json' \
         -d "$payload" \
-        http://0.0.0.0:8000/report &> /dev/null
-    echo "Data sent to http://0.0.0.0:8000/report"
+        "$SERVER_URL" &> /dev/null
+    echo "Data sent to $SERVER_URL"
 
     sleep 5
 done
